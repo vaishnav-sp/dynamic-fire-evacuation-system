@@ -1,0 +1,118 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  border-radius: 6px;
+  border: 1px solid #e5e7eb;
+  background: linear-gradient(135deg, #fafbfc 0%, #ffffff 100%);
+}
+
+.container.critical {
+  border-color: #dc2626;
+  background: linear-gradient(135deg, #fef2f2 0%, #ffffff 100%);
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+.noData {
+  padding: 12px;
+  text-align: center;
+  color: #9ca3af;
+  font-size: 13px;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 0;
+  border-bottom: 1px solid #e5e7eb;
+  padding-bottom: 12px;
+}
+
+.nodeId {
+  font-size: 20px;
+  font-weight: 700;
+  color: #1f2937;
+  margin: 0;
+}
+
+.typeAndState {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.type {
+  font-size: 11px;
+  font-weight: 600;
+  color: #6b7280;
+  padding: 4px 8px;
+  background-color: #f3f4f6;
+  border-radius: 4px;
+  letter-spacing: 0.5px;
+}
+
+.state {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.sensors {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.sensorRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px;
+  background-color: #f9fafb;
+  border-radius: 4px;
+  font-size: 13px;
+}
+
+.sensorRow label {
+  color: #6b7280;
+  font-weight: 500;
+}
+
+.value {
+  font-weight: 600;
+  color: #1f2937;
+  font-family: 'Courier New', monospace;
+}
+
+.hazard {
+  border-top: 1px solid #e5e7eb;
+  padding-top: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.hazardRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px;
+  background: linear-gradient(90deg, rgba(30, 58, 138, 0.05) 0%, transparent 100%);
+  border-radius: 4px;
+}
+
+.hazardRow label {
+  color: #374151;
+  font-weight: 600;
+  font-size: 13px;
+}
+
+.hazardValue {
+  font-size: 16px;
+  font-weight: 700;
+  font-family: 'Courier New', monospace;
+}

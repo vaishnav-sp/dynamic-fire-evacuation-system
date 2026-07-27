@@ -1,0 +1,90 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #374151;
+  margin: 0;
+}
+
+.noData {
+  padding: 20px;
+  text-align: center;
+  color: #9ca3af;
+  font-size: 13px;
+  background-color: #f9fafb;
+  border-radius: 4px;
+}
+
+.heatmapChart {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.bar {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.barLabel {
+  font-size: 12px;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.barContainer {
+  display: flex;
+  align-items: center;
+  background-color: #f9fafb;
+  border-radius: 4px;
+  height: 28px;
+  overflow: hidden;
+  border: 1px solid #e5e7eb;
+}
+
+.barFill {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 0 6px;
+  transition: width 300ms ease-out;
+  min-width: 30px;
+}
+
+.barValue {
+  font-size: 11px;
+  font-weight: 700;
+  color: white;
+  font-family: 'Courier New', monospace;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.predicted {
+  font-size: 11px;
+  color: #9ca3af;
+  text-align: right;
+}
+
+.legend {
+  border-top: 1px solid #e5e7eb;
+  padding-top: 12px;
+}
+
+.legendItem {
+  font-size: 11px;
+  color: #6b7280;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.legendLabel {
+  font-weight: 500;
+}

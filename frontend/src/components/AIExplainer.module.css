@@ -1,0 +1,136 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #374151;
+  margin: 0;
+}
+
+.noData {
+  padding: 16px;
+  text-align: center;
+  color: #9ca3af;
+  font-size: 13px;
+  background-color: #f9fafb;
+  border-radius: 4px;
+  border: 1px dashed #d1d5db;
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.sectionTitle {
+  font-size: 12px;
+  font-weight: 600;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin: 0;
+}
+
+.zonesList {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.zoneItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px;
+  background-color: rgba(220, 38, 38, 0.05);
+  border-radius: 4px;
+  border-left: 3px solid #dc2626;
+  font-size: 12px;
+}
+
+.zoneId {
+  font-weight: 700;
+  color: #1f2937;
+  min-width: 30px;
+}
+
+.zoneReason {
+  color: #dc2626;
+  font-weight: 600;
+}
+
+.zoneDetail {
+  margin-left: auto;
+  color: #6b7280;
+  font-family: 'Courier New', monospace;
+}
+
+.reasonBox {
+  padding: 10px;
+  background: linear-gradient(135deg, #eff6ff 0%, #f0f9ff 100%);
+  border: 1px solid #bfdbfe;
+  border-radius: 4px;
+  color: #1e40af;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.logicList {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.logicItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 6px;
+  font-size: 11px;
+  color: #4b5563;
+}
+
+.logicIcon {
+  color: #10b981;
+  font-weight: 700;
+  min-width: 16px;
+}
+
+.logicText {
+  flex: 1;
+}
+
+.decisionBox {
+  padding: 12px;
+  border-radius: 4px;
+  border: 2px solid;
+  background-color: rgba(16, 185, 129, 0.05);
+  border-color: #10b981;
+}
+
+.decisionBox.required {
+  background-color: rgba(220, 38, 38, 0.05);
+  border-color: #dc2626;
+}
+
+.decisionBox.notRequired {
+  background-color: rgba(16, 185, 129, 0.05);
+  border-color: #10b981;
+}
+
+.decisionLabel {
+  font-weight: 700;
+  font-size: 13px;
+  color: #1f2937;
+  margin-bottom: 4px;
+}
+
+.decisionReason {
+  font-size: 11px;
+  color: #6b7280;
+}

@@ -1,0 +1,430 @@
+.dashboard {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100vh;
+  background-color: #f9fafb;
+  overflow: hidden;
+}
+
+/* ============================================
+   HEADER
+   ============================================ */
+
+.header {
+  background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+  color: white;
+  padding: 20px 24px;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  border-bottom: 3px solid rgba(255, 255, 255, 0.1);
+}
+
+.headerContent {
+  max-width: 1600px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.titleSection {
+  flex: 1;
+}
+
+.mainTitle {
+  font-size: 28px;
+  font-weight: 700;
+  margin: 0;
+  letter-spacing: 0.5px;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.subtitle {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.9);
+  margin: 4px 0 0 0;
+  font-weight: 400;
+}
+
+.statusSection {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.statusBadge {
+  background-color: rgba(255, 255, 255, 0.2);
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 12px;
+  letter-spacing: 1px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.connectionStatus {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  padding: 6px 12px;
+  border-radius: 6px;
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.connectionStatus.connected {
+  background-color: rgba(16, 185, 129, 0.2);
+  color: #d1fae5;
+}
+
+.connectionStatus.disconnected {
+  background-color: rgba(220, 38, 38, 0.2);
+  color: #fee2e2;
+}
+
+.dot {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: currentColor;
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+.timestamp {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.8);
+  font-family: 'Courier New', monospace;
+}
+
+/* ============================================
+   MAIN CONTENT AREA
+   ============================================ */
+
+.main {
+  flex: 1;
+  overflow: hidden;
+  padding: 16px;
+  background-color: #f9fafb;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr 1fr;
+  gap: 16px;
+  height: 100%;
+  max-width: 1600px;
+  margin: 0 auto;
+}
+
+/* ============================================
+   COLUMNS
+   ============================================ */
+
+.leftColumn,
+.centerColumn,
+.rightColumn {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  overflow-y: auto;
+  height: 100%;
+}
+
+/* ============================================
+   SECTIONS
+   ============================================ */
+
+.section {
+  background-color: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 16px;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.section h3 {
+  margin: 0;
+  font-size: 16px;
+  color: #1f2937;
+}
+
+.sectionHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.sectionHeader h3 {
+  margin: 0;
+}
+
+.closeButton {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: #9ca3af;
+  padding: 0;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  transition: all 150ms;
+}
+
+.closeButton:hover {
+  background-color: #f3f4f6;
+  color: #1f2937;
+}
+
+.sectionTitle {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: #374151;
+}
+
+/* ============================================
+   OVERVIEW STATS
+   ============================================ */
+
+.quickStats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.statCard {
+  background: linear-gradient(135deg, #f0f9ff 0%, #eff6ff 100%);
+  border: 1px solid #bfdbfe;
+  border-radius: 6px;
+  padding: 12px;
+  text-align: center;
+}
+
+.statLabel {
+  font-size: 11px;
+  color: #6b7280;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 4px;
+}
+
+.statValue {
+  font-size: 24px;
+  font-weight: 700;
+  color: #1e3a8a;
+}
+
+/* ============================================
+   SENSORS LIST
+   ============================================ */
+
+.sensorsList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* ============================================
+   ROOM GRID
+   ============================================ */
+
+.roomGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+/* ============================================
+   FOOTER
+   ============================================ */
+
+.footer {
+  background-color: #f3f4f6;
+  border-top: 1px solid #e5e7eb;
+  padding: 12px 24px;
+  font-size: 11px;
+  color: #6b7280;
+}
+
+.footerContent {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1600px;
+  margin: 0 auto;
+}
+
+/* ============================================
+   LOADING & ERROR STATES
+   ============================================ */
+
+.loadingContainer,
+.errorContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  gap: 20px;
+  color: #6b7280;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid #e5e7eb;
+  border-top-color: #1e3a8a;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+.errorContainer h2 {
+  color: #dc2626;
+  margin: 0;
+}
+
+.errorContainer p {
+  margin: 0;
+  max-width: 400px;
+  text-align: center;
+}
+
+.retryButton {
+  background-color: #1e3a8a;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 150ms;
+}
+
+.retryButton:hover {
+  background-color: #3b82f6;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+/* ============================================
+   INSIGHT TOGGLE BUTTON
+   ============================================ */
+
+.insightToggle {
+  background-color: #f3f4f6;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  padding: 10px 16px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  color: #6b7280;
+  transition: all 150ms;
+}
+
+.insightToggle:hover {
+  background-color: #e5e7eb;
+  border-color: #9ca3af;
+  color: #1f2937;
+}
+
+.insightToggle.active {
+  background-color: #3b82f6;
+  border-color: #1e3a8a;
+  color: white;
+}
+
+/* ============================================
+   SCROLLBAR
+   ============================================ */
+
+.leftColumn::-webkit-scrollbar,
+.centerColumn::-webkit-scrollbar,
+.rightColumn::-webkit-scrollbar {
+  width: 6px;
+}
+
+.leftColumn::-webkit-scrollbar-track,
+.centerColumn::-webkit-scrollbar-track,
+.rightColumn::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.leftColumn::-webkit-scrollbar-thumb,
+.centerColumn::-webkit-scrollbar-thumb,
+.rightColumn::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+  border-radius: 3px;
+}
+
+.leftColumn::-webkit-scrollbar-thumb:hover,
+.centerColumn::-webkit-scrollbar-thumb:hover,
+.rightColumn::-webkit-scrollbar-thumb:hover {
+  background: #9ca3af;
+}
+
+/* ============================================
+   RESPONSIVE DESIGN
+   ============================================ */
+
+@media (max-width: 1400px) {
+  .grid {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+}
+
+@media (max-width: 1024px) {
+  .header {
+    padding: 16px;
+  }
+
+  .headerContent {
+    flex-direction: column;
+    gap: 12px;
+    text-align: center;
+  }
+
+  .statusSection {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .rightColumn {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  }
+}
+
+@media (max-width: 768px) {
+  .main {
+    padding: 12px;
+  }
+
+  .grid {
+    grid-template-columns: 1fr;
+  }
+
+  .rightColumn {
+    grid-column: auto;
+  }
+
+  .quickStats {
+    grid-template-columns: 1fr;
+  }
+}

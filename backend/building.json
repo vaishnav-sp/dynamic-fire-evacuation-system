@@ -1,0 +1,112 @@
+{
+    "building_name": "Honeywell Demo Building",
+
+    "rooms": [
+        {
+            "id": "R1",
+            "name": "Room 1",
+            "type": "REAL"
+        },
+        {
+            "id": "R2",
+            "name": "Room 2",
+            "type": "VIRTUAL"
+        },
+        {
+            "id": "R3",
+            "name": "Room 3",
+            "type": "VIRTUAL"
+        },
+        {
+            "id": "R4",
+            "name": "Room 4",
+            "type": "VIRTUAL"
+        },
+        {
+            "id": "R5",
+            "name": "Room 5",
+            "type": "VIRTUAL"
+        }
+    ],
+
+    "corridors": [
+        {
+            "id": "C1",
+            "name": "Main Corridor",
+            "type": "REAL"
+        },
+        {
+            "id": "C2",
+            "name": "Secondary Corridor",
+            "type": "VIRTUAL"
+        }
+    ],
+
+    "exits": [
+        {
+            "id": "E1",
+            "name": "Exit A"
+        },
+        {
+            "id": "E2",
+            "name": "Exit B"
+        }
+    ],
+
+    "connections": [
+
+        {
+            "from": "R1",
+            "to": "C1",
+            "distance": 5
+        },
+
+        {
+            "from": "R2",
+            "to": "C1",
+            "distance": 5
+        },
+
+        {
+            "from": "R3",
+            "to": "R1",
+            "distance": 4
+        },
+
+        {
+            "from": "R3",
+            "to": "C2",
+            "distance": 5
+        },
+
+        {
+            "from": "R4",
+            "to": "R2",
+            "distance": 4
+        },
+
+        {
+            "from": "R4",
+            "to": "C2",
+            "distance": 5
+        },
+
+        {
+            "from": "R5",
+            "to": "C2",
+            "distance": 4
+        },
+
+        {
+            "from": "C1",
+            "to": "E1",
+            "distance": 6
+        },
+
+        {
+            "from": "R5",
+            "to": "E2",
+            "distance": 5
+        }
+    ]
+}

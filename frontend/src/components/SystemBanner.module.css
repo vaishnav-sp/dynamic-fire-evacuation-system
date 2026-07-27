@@ -1,0 +1,78 @@
+.banner {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 12px 16px;
+  background-color: #f9fafb;
+  border-bottom: 2px solid #e5e7eb;
+  border-radius: 0;
+  font-size: 12px;
+}
+
+.banner.healthy {
+  border-bottom-color: #10b981;
+  background-color: rgba(16, 185, 129, 0.02);
+}
+
+.banner.unhealthy {
+  border-bottom-color: #dc2626;
+  background-color: rgba(220, 38, 38, 0.02);
+}
+
+.statusItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.indicator {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  box-shadow: 0 0 8px currentColor;
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.6;
+  }
+}
+
+.info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.label {
+  color: #6b7280;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-size: 10px;
+}
+
+.status {
+  color: #1f2937;
+  font-weight: 600;
+  font-size: 11px;
+}
+
+.divider {
+  width: 1px;
+  height: 24px;
+  background-color: #d1d5db;
+}
+
+.lastUpdate {
+  margin-left: auto;
+  color: #9ca3af;
+  font-size: 11px;
+  font-family: 'Courier New', monospace;
+}
