@@ -22,15 +22,42 @@ const BuildingMap = ({ nodes, evacuationRoute, onNodeClick, selectedNode }) => {
 
   // SVG coordinate mapping for nodes
   const nodePositions = {
-    R1: { x: 50, y: 50, width: 140, height: 110 },
-    R2: { x: 220, y: 50, width: 140, height: 110 },
-    R3: { x: 390, y: 50, width: 140, height: 110 },
-    C1: { x: 50, y: 180, width: 140, height: 80 },
-    C2: { x: 220, y: 180, width: 140, height: 80 },
-    R4: { x: 390, y: 180, width: 140, height: 110 },
-    R5: { x: 220, y: 320, width: 140, height: 110 },
-    E1: { x: 50, y: 450, width: 140, height: 60 },
-    E2: { x: 390, y: 450, width: 140, height: 60 },
+
+    // ---------- TOP ----------
+    R1: { x: 40,  y: 40,  width: 90, height: 60 },
+    R2: { x: 170, y: 40,  width: 90, height: 60 },
+    R3: { x: 300, y: 40,  width: 90, height: 60 },
+    R4: { x: 430, y: 40,  width: 90, height: 60 },
+
+    // ---------- UPPER CORRIDORS ----------
+    C1: { x: 40,  y: 140, width: 90, height: 45 },
+    C2: { x: 235, y: 140, width: 90, height: 45 },
+    C3: { x: 430, y: 140, width: 90, height: 45 },
+
+    // ---------- LOBBY ----------
+    L1: { x: 235, y: 210, width: 90, height: 45 },
+
+    // ---------- MIDDLE ----------
+    C4: { x: 80,  y: 280, width: 70, height: 40 },
+    H1: { x: 235, y: 280, width: 90, height: 45 },
+    C5: { x: 410, y: 280, width: 70, height: 40 },
+
+    // ---------- LOWER ROOMS ----------
+    R5: { x: 40,  y: 360, width: 90, height: 60 },
+    R6: { x: 170, y: 360, width: 90, height: 60 },
+    R7: { x: 300, y: 360, width: 90, height: 60 },
+    R8: { x: 430, y: 360, width: 90, height: 60 },
+
+    // ---------- LOWER CORRIDORS ----------
+    C6: { x: 105, y: 455, width: 90, height: 45 },
+    C7: { x: 365, y: 455, width: 90, height: 45 },
+
+    // ---------- LOWER LOBBY ----------
+    L2: { x: 235, y: 525, width: 90, height: 45 },
+
+    // ---------- EXITS ----------
+    E1: { x: 235, y: 120, width: 90, height: 40 },
+    E2: { x: 235, y: 610, width: 90, height: 40 },
   };
 
   const isNodeOnRoute = (nodeId) => {
@@ -54,12 +81,12 @@ const BuildingMap = ({ nodes, evacuationRoute, onNodeClick, selectedNode }) => {
       <h3 className={styles.title}>Digital Twin Floor Map</h3>
       <div className={styles.mapWrapper}>
         <svg
-          viewBox="0 0 600 550"
+          viewBox="0 0 1000 800"
           className={styles.map}
           xmlns="http://www.w3.org/2000/svg"
         >
           {/* Background */}
-          <rect width="600" height="550" fill="#fafbfc" stroke="#e5e7eb" strokeWidth="2" />
+          <rect width="560" height="680" fill="#fafbfc" stroke="#e5e7eb" strokeWidth="2" />
 
           {/* Grid background */}
           <defs>
@@ -98,7 +125,7 @@ const BuildingMap = ({ nodes, evacuationRoute, onNodeClick, selectedNode }) => {
             `}</style>
           </defs>
 
-          <rect width="600" height="550" fill="url(#grid)" />
+          <rect width="560" height="680" fill="url(#grid)" />
 
           {/* Draw nodes */}
           {Object.entries(nodePositions).map(([nodeId, pos]) => {
@@ -111,7 +138,19 @@ const BuildingMap = ({ nodes, evacuationRoute, onNodeClick, selectedNode }) => {
             return (
               <g
                 key={nodeId}
-                onClick={() => onNodeClick?.(nodeId)}
+                onClick={async () => {
+                  onNodeClick?.(nodeId);
+
+                  if (nodeId.startsWith("R")) {
+                    await fetch(`http://localhost:8000/dashboard/start/${nodeId}`, {
+                      method: "POST",
+                    });
+
+                    window.dispatchEvent(new Event("refresh-dashboard"));
+                  }
+                }}
+
+
                 className={styles.nodeGroup}
                 style={{ cursor: 'pointer' }}
               >
@@ -211,43 +250,46 @@ const BuildingMap = ({ nodes, evacuationRoute, onNodeClick, selectedNode }) => {
 
                 if (!from || !to) return null;
 
-                const x1 = from.x + from.width / 2;
-                const y1 = from.y + from.height / 2;
-                const x2 = to.x + to.width / 2;
-                const y2 = to.y + to.height / 2;
+                const startX = from.x + from.width / 2;
+                const startY = from.y + from.height / 2;
+
+                const endX = to.x + to.width / 2;
+                const endY = to.y + to.height / 2;
+
+                // L-shaped routing
+                const midX = startX;
+                const midY = endY;
 
                 return (
-                  <g key={`route-${index}`}>
-                    {/* Path line with glow */}
-                    <line
-                      x1={x1}
-                      y1={y1}
-                      x2={x2}
-                      y2={y2}
+                  <g key={index}>
+                    {/* Glow */}
+                    <polyline
+                      points={`${startX},${startY} ${midX},${midY} ${endX},${endY}`}
+                      fill="none"
                       stroke="#10b981"
-                      strokeWidth="5"
-                      opacity="0.3"
+                      strokeWidth="8"
+                      opacity="0.25"
                       strokeLinecap="round"
+                      strokeLinejoin="round"
                     />
 
-                    {/* Main path line */}
-                    <line
-                      x1={x1}
-                      y1={y1}
-                      x2={x2}
-                      y2={y2}
+                    {/* Main route */}
+                    <polyline
+                      points={`${startX},${startY} ${midX},${midY} ${endX},${endY}`}
+                      fill="none"
                       stroke="#10b981"
-                      strokeWidth="2.5"
-                      strokeDasharray="5,5"
+                      strokeWidth="4"
+                      strokeDasharray="10 6"
                       strokeLinecap="round"
+                      strokeLinejoin="round"
                       className={styles.animatedPath}
                     />
 
-                    {/* Arrow indicator */}
+                    {/* Direction marker */}
                     <circle
-                      cx={(x1 + x2) / 2}
-                      cy={(y1 + y2) / 2}
-                      r="4"
+                      cx={midX}
+                      cy={midY}
+                      r="5"
                       fill="#10b981"
                     />
                   </g>

@@ -50,6 +50,12 @@ export const useBuilding = () => {
     // Initial fetch
     fetchData();
 
+    const refreshHandler = () => {
+      fetchData();
+    };
+
+    window.addEventListener("refresh-dashboard", refreshHandler);
+
     // Set up adaptive polling - retry faster when offline
     let pollInterval;
     
@@ -72,15 +78,14 @@ export const useBuilding = () => {
     // Cleanup
     return () => {
       if (pollInterval) clearInterval(pollInterval);
+      window.removeEventListener("refresh-dashboard", refreshHandler);
     };
   }, [fetchData]);
 
   // Refetch function for manual updates
   const refetch = useCallback(async () => {
-    setLoading(true);
-    await fetchData();
-  }, [fetchData]);
-
+      await fetchData();
+    }, [fetchData]);
   return {
     state,
     loading,

@@ -9,180 +9,102 @@ from app.models.exit import Exit
 
 class GraphBuilder:
 
-
     def __init__(self, building_file):
-
         self.building_file = building_file
-
         self.graph = nx.Graph()
-
-
 
     def load(self):
 
-        with open(
-            self.building_file,
-            "r"
-        ) as file:
-
+        with open(self.building_file, "r") as file:
             data = json.load(file)
 
-
-
-        # Create building object
-        # Supports both "name" and "building_name"
-
-        building_name = data.get(
-            "name",
+        building = Building(
             data.get(
                 "building_name",
-                "Unknown Building"
+                data.get("name", "Unknown Building")
             )
         )
 
+        # ---------------- Rooms ----------------
 
-        building = Building(
-            building_name
-        )
-
-
-
-        # -----------------------
-        # Rooms
-        # -----------------------
-
-        for room in data["rooms"]:
-
+        for room in data.get("rooms", []):
 
             obj = Room(
-
                 id=room["id"],
-
                 name=room["name"],
-
-                node_type=room.get(
-                    "node_type",
-                    room.get(
-                        "type",
-                        "VIRTUAL"
-                    )
-                )
-
+                node_type=room.get("type", "VIRTUAL")
             )
 
-
-            building.add_room(
-                obj
-            )
-
+            building.add_room(obj)
 
             self.graph.add_node(
-
                 obj.id,
-
                 type="ROOM"
-
             )
 
+        # ---------------- Corridors ----------------
 
-
-        # -----------------------
-        # Corridors
-        # -----------------------
-
-        for corridor in data["corridors"]:
-
+        for corridor in data.get("corridors", []):
 
             obj = Corridor(
-
                 id=corridor["id"],
-
                 name=corridor["name"],
-
-                node_type=corridor.get(
-                    "node_type",
-                    corridor.get(
-                        "type",
-                        "VIRTUAL"
-                    )
-                )
-
+                node_type=corridor.get("type", "VIRTUAL")
             )
 
-
-            building.add_corridor(
-                obj
-            )
-
+            building.add_corridor(obj)
 
             self.graph.add_node(
-
                 obj.id,
-
                 type="CORRIDOR"
-
             )
 
+        # ---------------- Lobbies ----------------
 
+        for lobby in data.get("lobbies", []):
 
-        # -----------------------
-        # Exits
-        # -----------------------
+            obj = Corridor(
+                id=lobby["id"],
+                name=lobby["name"],
+                node_type=lobby.get("type", "VIRTUAL")
+            )
 
-        for exit_node in data["exits"]:
+            building.add_lobby(obj)
 
+            self.graph.add_node(
+                obj.id,
+                type="LOBBY"
+            )
+
+        # ---------------- Exits ----------------
+
+        for exit_node in data.get("exits", []):
 
             obj = Exit(
-
                 id=exit_node["id"],
-
                 name=exit_node["name"]
-
             )
 
-
-            building.add_exit(
-                obj
-            )
-
+            building.add_exit(obj)
 
             self.graph.add_node(
-
                 obj.id,
-
                 type="EXIT"
-
             )
 
+        # ---------------- Connections ----------------
 
+        for edge in data.get("connections", []):
 
-        # -----------------------
-        # Connections
-        # -----------------------
-
-        for edge in data["connections"]:
-
-
-            building.add_connection(
-                edge
-            )
-
+            building.add_connection(edge)
 
             self.graph.add_edge(
-
                 edge["from"],
-
                 edge["to"],
-
                 distance=edge["distance"],
-
                 cost=edge["distance"]
-
             )
 
-
-
         building.graph = self.graph
-
 
         return building, self.graph

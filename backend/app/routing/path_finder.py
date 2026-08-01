@@ -18,175 +18,115 @@ class PathFinder:
         blocked_nodes=None
     ):
 
-
         if blocked_nodes is None:
-
             blocked_nodes = []
 
-
-
         if start not in self.graph:
-
             return {
-
                 "type": "SAFEST",
-
                 "path": None,
-
                 "cost": None,
-
                 "reason": "Starting node not found"
-
             }
-
-
-
-        if not exits:
-
-            return {
-
-                "type": "SAFEST",
-
-                "path": None,
-
-                "cost": None,
-
-                "reason": "No exits available"
-
-            }
-
-
-
-        # Copy graph to preserve original
 
         graph = self.graph.copy()
 
-
-
-        # Never block current position
-
-        # Never block exits
-
-        protected_nodes = set(exits)
-
-        protected_nodes.add(start)
-
-
-
-        removable_nodes = [
-
-            node
-
-            for node in blocked_nodes
-
-            if node not in protected_nodes
-
-        ]
-
-
+        protected = set(exits)
+        protected.add(start)
 
         graph.remove_nodes_from(
-            removable_nodes
+            [n for n in blocked_nodes if n not in protected]
         )
 
-
-
-        best_path = None
-
-        best_cost = float("inf")
-
-
+        best_route = None
+        best_score = float("inf")
 
         for exit_node in exits:
 
-
             if exit_node not in graph:
-
                 continue
-
-
 
             try:
 
-
-                path = nx.dijkstra_path(
-
+                # Get several possible routes
+                paths = nx.shortest_simple_paths(
                     graph,
-
                     start,
-
                     exit_node,
-
                     weight="cost"
-
                 )
 
+                checked = 0
 
+                for path in paths:
 
-                cost = nx.dijkstra_path_length(
+                    checked += 1
 
-                    graph,
+                    if checked > 10:
+                        break
 
-                    start,
+                    edge_cost = 0
+                    cumulative_risk = 0
+                    max_risk = 0
+                    danger_nodes = 0
 
-                    exit_node,
+                    for i in range(len(path) - 1):
 
-                    weight="cost"
+                        edge = graph[path[i]][path[i + 1]]
 
-                )
+                        edge_cost += edge["cost"]
 
+                    for node in path:
 
+                        risk = 0
 
-                if cost < best_cost:
+                        for nbr in graph.neighbors(node):
 
-                    best_cost = cost
+                            edge = graph[node][nbr]
 
-                    best_path = path
+                            risk = max(
+                                risk,
+                                edge["cost"] - edge["distance"]
+                            )
 
+                        cumulative_risk += risk
+                        max_risk = max(max_risk, risk)
 
+                        if risk > 30:
+                            danger_nodes += 1
+
+                    score = (
+                        edge_cost
+                        + cumulative_risk * 2
+                        + max_risk * 10
+                        + danger_nodes * 100
+                    )
+
+                    if score < best_score:
+
+                        best_score = score
+
+                        best_route = {
+                            "path": path,
+                            "cost": round(edge_cost, 2)
+                        }
 
             except nx.NetworkXNoPath:
-
                 continue
 
-
-
-
-        if best_path is None:
-
+        if best_route is None:
             return {
-
                 "type": "SAFEST",
-
                 "path": None,
-
                 "cost": None,
-
-                "reason": "No safe path available"
-
+                "reason": "No safe route available"
             }
 
-
-
-
         return {
-
-
             "type": "SAFEST",
-
-
-            "path": best_path,
-
-
-            "cost": round(
-                best_cost,
-                2
-            ),
-
-
-            "reason":
-                "Safest hazard-aware route selected"
-
+            "path": best_route["path"],
+            "cost": best_route["cost"],
+            "reason": "Lowest cumulative fire-risk path selected"
         }
 
 

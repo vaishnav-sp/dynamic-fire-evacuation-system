@@ -1,7 +1,10 @@
-.container {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
+.mapWrapper{
+    width:100%;
+    height:900px;
+    overflow:hidden;
+    display:flex;
+    justify-content:center;
+    align-items:center;
 }
 
 .title {

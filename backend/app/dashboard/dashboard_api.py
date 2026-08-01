@@ -27,3 +27,13 @@ def dashboard_health():
         "service":"Fire Commander Dashboard"
 
     }
+
+@router.post("/start/{node_id}")
+def set_start(node_id: str):
+
+    dashboard_state.set_start_node(node_id)
+
+    return {
+        "start": node_id,
+        "status": "UPDATED"
+    }

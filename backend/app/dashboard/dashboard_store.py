@@ -1,5 +1,5 @@
 from copy import deepcopy
-
+import networkx as nx
 from app.config.settings import BUILDING_FILE
 from app.decision.evacuation_manager import EvacuationManager
 from app.routing.graph_builder import GraphBuilder
@@ -8,11 +8,108 @@ from app.routing.route_manager import RouteManager
 
 class DashboardState:
     def __init__(self):
-        self.state = {"nodes": {}, "evacuation": {}, "routes": {}}
-        self.building = None
+        self.real_nodes = {}
+        self.virtual_nodes = {}
+
+        self.state = {
+            "selected_start": "R1",
+            "nodes": {},
+            "evacuation": {},
+            "routes": {}
+        }
         self.route_manager = None
         self.evacuation_manager = None
         self._initialize_default_state()
+
+
+    def _propagate_fire(self, source_node):
+
+        graph = self.building.graph
+
+        for node_id in self.state["nodes"]:
+
+            try:
+                distance = nx.shortest_path_length(
+                    graph,
+                    source_node,
+                    node_id
+                )
+
+            except nx.NetworkXNoPath:
+                continue
+
+            # --------------------------
+            # Base values decay with distance
+            # --------------------------
+
+            temperature = max(0, 92 - distance * 22)
+            smoke = max(0, 88 - distance * 14)
+
+            # --------------------------
+            # Corridors spread smoke
+            # but reduce heat
+            # --------------------------
+
+            node_type = graph.nodes[node_id]["type"]
+
+            if node_type == "CORRIDOR":
+
+                temperature *= 0.60
+                smoke *= 1.15
+
+            # --------------------------
+            # Exits stay relatively safe
+            # --------------------------
+
+            if node_type == "EXIT":
+
+                temperature *= 0.30
+                smoke *= 0.50
+
+            # --------------------------
+            # Hazard calculation
+            # --------------------------
+
+            hazard = min(
+                100,
+                temperature * 0.35 +
+                smoke * 0.65
+            )
+
+            prediction = min(
+                100,
+                hazard + 8
+            )
+
+            if hazard >= 80:
+                state = "CRITICAL"
+
+            elif hazard >= 60:
+                state = "DANGER"
+
+            elif hazard >= 30:
+                state = "MODERATE"
+
+            else:
+                state = "SAFE"
+
+            self._update_node(
+
+                node_id,
+
+                round(temperature, 1),
+
+                round(smoke, 1),
+
+                node_id == source_node,
+
+                round(hazard, 1),
+
+                round(prediction, 1),
+
+                state
+
+            )
 
     def _initialize_default_state(self):
         try:
@@ -26,7 +123,13 @@ class DashboardState:
         self.evacuation_manager = EvacuationManager(self.route_manager)
 
         nodes = {}
-        for node_id, node in {**building.rooms, **building.corridors}.items():
+        all_nodes = {
+            **building.rooms,
+            **building.corridors,
+            **building.lobbies
+        }
+
+        for node_id, node in all_nodes.items():
             nodes[node_id] = {
                 "node_type": getattr(node, "node_type", "VIRTUAL"),
                 "temperature": getattr(node, "temperature", 0.0),
@@ -44,7 +147,9 @@ class DashboardState:
                 "last_updated": getattr(node, "last_updated", None),
             }
 
-        self.state["nodes"] = nodes
+        self.virtual_nodes = deepcopy(nodes)
+
+        self._merge_nodes()
         self._refresh_evacuation()
 
     def _normalize_node(self, node_id, node):
@@ -83,6 +188,14 @@ class DashboardState:
             "last_updated": getattr(node, "last_updated", None),
         }
 
+    def _merge_nodes(self):
+        merged = deepcopy(self.virtual_nodes)
+
+        for node_id, node in self.real_nodes.items():
+            merged[node_id] = node
+
+        self.state["nodes"] = merged
+
     def _refresh_evacuation(self):
         if not self.route_manager or not self.evacuation_manager:
             return
@@ -103,10 +216,7 @@ class DashboardState:
         self.state["routes"] = {"current": route, "blocked_nodes": blocked_nodes}
 
     def _default_start_node(self):
-        for candidate in ("R1", "R2", "R3", "C1", "C2"):
-            if candidate in self.state["nodes"]:
-                return candidate
-        return next(iter(self.state["nodes"]), "R1")
+        return self.state.get("selected_start", "R1")
 
     def _get_neighbors(self, node_id):
         if self.building is None:
@@ -117,7 +227,7 @@ class DashboardState:
         if node_id not in self.state["nodes"]:
             return
 
-        node = self.state["nodes"][node_id]
+        node = self.virtual_nodes[node_id]
         node["temperature"] = temperature
         node["smoke"] = smoke
         node["flame"] = flame
@@ -129,33 +239,66 @@ class DashboardState:
         node["confidence"] = 100.0
 
     def apply_scenario(self, node_id, scenario):
+
         if not self.state["nodes"]:
             self._initialize_default_state()
 
         if node_id not in self.state["nodes"]:
-            return {"status": "NODE_NOT_FOUND", "node": node_id}
+            return {
+                "status": "NODE_NOT_FOUND",
+                "node": node_id
+            }
+
+        # Reset everything first
+
+        for node in self.state["nodes"].values():
+
+            node["temperature"] = 0
+            node["smoke"] = 0
+            node["flame"] = False
+            node["hazard_score"] = 0
+            node["predicted_hazard"] = 0
+            node["prediction_score"] = 0
+            node["hazard"] = 0
+            node["state"] = "SAFE"
 
         if scenario == "FLASHOVER":
-            self._update_node(node_id, 92, 88, True, 88, 84, "CRITICAL")
-            for neighbor_id in self._get_neighbors(node_id):
-                self._update_node(neighbor_id, 62, 48, False, 58, 66, "DANGER")
-        else:
-            self._update_node(node_id, 68, 54, True, 60, 62, "DANGER")
-            for neighbor_id in self._get_neighbors(node_id):
-                self._update_node(neighbor_id, 42, 28, False, 34, 42, "MODERATE")
 
+            self._propagate_fire(node_id)
+
+        else:
+
+            self._propagate_fire(node_id)
+
+            # Smoldering is weaker
+
+            for node in self.state["nodes"].values():
+
+                node["temperature"] *= 0.65
+                node["smoke"] *= 0.75
+                node["hazard_score"] *= 0.70
+                node["hazard"] = node["hazard_score"]
+
+        self._merge_nodes()
         self._refresh_evacuation()
+
         return self.state
 
     def reset_state(self):
+
+        self.real_nodes.clear()
+        self.virtual_nodes.clear()
+
         self._initialize_default_state()
+
         return self.state
 
     def update_nodes(self, nodes):
-        normalized = {}
+
         for node_id, node in nodes.items():
-            normalized[node_id] = self._normalize_node(node_id, node)
-        self.state["nodes"] = normalized
+            self.real_nodes[node_id] = self._normalize_node(node_id, node)
+
+        self._merge_nodes()
         self._refresh_evacuation()
 
     def update_evacuation(self, data):
@@ -166,6 +309,14 @@ class DashboardState:
 
     def get_state(self):
         return deepcopy(self.state)
+
+    def set_start_node(self, node_id):
+
+        if node_id not in self.state["nodes"]:
+            return
+
+        self.state["selected_start"] = node_id
+        self._refresh_evacuation()
 
 
 dashboard_state = DashboardState()
